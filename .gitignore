@@ -1,0 +1,25 @@
+# IDEs and Editors
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# OS Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Next.js Client
+client/node_modules/
+client/.next/
+client/out/
+client/build/
+client/.env*
+client/*.tsbuildinfo
+client/next-env.d.ts
+
+# Maven Backend
+backend/target/
+backend/build/
+backend/.mvn/wrapper/maven-wrapper.jar
