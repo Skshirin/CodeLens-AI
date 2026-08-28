@@ -1,25 +1,68 @@
-# IDEs and Editors
+# =========================================================================
+# IDEs, Editors & OS Files (Global)
+# =========================================================================
 .vscode/
 .idea/
 *.iml
 *.iws
 *.ipr
-
-# OS Files
 .DS_Store
 Thumbs.db
 Desktop.ini
+*.pem
 
-# Next.js Client
+# =========================================================================
+# Client (Next.js & Frontend)
+# =========================================================================
 client/node_modules/
 client/.next/
 client/out/
 client/build/
+client/coverage/
 client/.env*
+client/.vercel
 client/*.tsbuildinfo
 client/next-env.d.ts
 
-# Maven Backend
+# Yarn specific (if used in client)
+client/.pnp
+client/.pnp.*
+client/.yarn/*
+!client/.yarn/patches
+!client/.yarn/plugins
+!client/.yarn/releases
+!client/.yarn/versions
+
+# Client Debug logs
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+client/.pnpm-debug.log*
+
+# =========================================================================
+# Backend (Spring Boot & Maven)
+# =========================================================================
+backend/HELP.md
 backend/target/
 backend/build/
 backend/.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# STS / Eclipse configs
+backend/.apt_generated
+backend/.classpath
+backend/.factorypath
+backend/.project
+backend/.settings
+backend/.springBeans
+backend/.sts4-cache
+
+# NetBeans configs
+backend/nbproject/private/
+backend/nbbuild/
+backend/dist/
+backend/nbdist/
+backend/.nb-gradle/
+!**/src/main/**/build/
+!**/src/test/**/build/
