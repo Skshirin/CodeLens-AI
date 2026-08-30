@@ -9,7 +9,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -29,7 +28,8 @@ public class SecurityConfig {
             HttpSecurity http,
             OAuth2UserService<OAuth2UserRequest, OAuth2User> gitHubOAuth2UserService,
             AuthenticationSuccessHandler oauth2SuccessHandler,
-            AuthenticationFailureHandler oauth2FailureHandler) throws Exception {      
+            AuthenticationFailureHandler oauth2FailureHandler) throws Exception {
+
         http
             .cors(Customizer.withDefaults())
 
@@ -40,6 +40,8 @@ public class SecurityConfig {
             )
 
             .authorizeHttpRequests(auth -> auth
+
+                // Public authentication endpoints
                 .requestMatchers(
                     "/api/auth/login-url",
                     "/oauth2/**",
@@ -48,12 +50,15 @@ public class SecurityConfig {
                 )
                 .permitAll()
 
+                // Allow CORS preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**")
                 .permitAll()
 
+                // All API endpoints require authentication
                 .requestMatchers("/api/**")
                 .authenticated()
 
+                // Everything else is public
                 .anyRequest()
                 .permitAll()
             )
@@ -82,23 +87,34 @@ public class SecurityConfig {
                 .deleteCookies("DEVPILOT_SESSION")
             );
 
-        return http.build();        
+        return http.build();
     }
-
 
     @Bean
     public AuthenticationSuccessHandler oauth2SuccessHandler(
             @Value("${app.frontend-url:http://localhost:3000}") String frontendUrl) {
-        SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
-        handler.setDefaultTargetUrl(frontendUrl + "/auth/callback");
+
+        SimpleUrlAuthenticationSuccessHandler handler =
+                new SimpleUrlAuthenticationSuccessHandler();
+
+        handler.setDefaultTargetUrl(
+                frontendUrl + "/auth/callback"
+        );
+
         return handler;
     }
 
     @Bean
     public AuthenticationFailureHandler oauth2FailureHandler(
             @Value("${app.frontend-url:http://localhost:3000}") String frontendUrl) {
-        SimpleUrlAuthenticationFailureHandler handler = new SimpleUrlAuthenticationFailureHandler();
-        handler.setDefaultFailureUrl(frontendUrl + "/login?error=oauth_failed");
+
+        SimpleUrlAuthenticationFailureHandler handler =
+                new SimpleUrlAuthenticationFailureHandler();
+
+        handler.setDefaultFailureUrl(
+                frontendUrl + "/login?error=oauth_failed"
+        );
+
         return handler;
     }
 }
