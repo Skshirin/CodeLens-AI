@@ -40,6 +40,6 @@ public class AppUserPrincipal implements OAuth2User {
 
     @Override
     public String getName() {
-        return user.getId() != null ? user.getId().toString() : "";
+        return user.getId().toString();
     }
 }

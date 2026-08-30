@@ -8,14 +8,13 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import codeLens.backend.entity.User;
-import codeLens.backend.services.userService;
+import codeLens.backend.services.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class GithubOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-
-    private final userService userService;
+    private final UserService userService;
     private final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
 
     @Override
@@ -26,8 +25,8 @@ public class GithubOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String scopes = userRequest.getAccessToken().getScopes() != null
                 ? String.join(",", userRequest.getAccessToken().getScopes())
                 : "read:user,repo";
-
-        User user = userService.upsertFromGitHub(githubUser.getAttributes(), accessToken, scopes);
-        return new AppUserPrincipal(user, githubUser.getAttributes());
-    }
+    
+         User user = userService.upsertFromGitHub(githubUser.getAttributes() , accessToken , scopes);
+         return new AppUserPrincipal(user , githubUser.getAttributes());
+            }
 }

@@ -8,16 +8,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import codeLens.backend.entity.User;
-import codeLens.backend.repository.userRepository;
+import codeLens.backend.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class userService {
-    private final userRepository userRepository;
-    private final TextEncryptor textEncryptor;
-
-    @Transactional
+public class UserService {
+    public final UserRepository userRepository;
+    public final TextEncryptor tokenEncryptor;
+    
+   @Transactional
     public User upsertFromGitHub(Map<String, Object> attributes, String accessToken, String scopes) {
         Long githubId = toLong(attributes.get("id"));
         String login = String.valueOf(attributes.get("login"));
@@ -28,7 +29,7 @@ public class userService {
                 ? String.valueOf(attributes.get("avatar_url"))
                 : null;
 
-        String encryptedToken = textEncryptor.encrypt(accessToken);
+        String encryptedToken = tokenEncryptor.encrypt(accessToken);
 
         User user = userRepository.findByGithubId(githubId).orElseGet(User::new);
         user.setGithubId(githubId);
@@ -39,14 +40,13 @@ public class userService {
         user.setTokenScopes(scopes);
         return userRepository.save(user);
     }
-
     @Transactional(readOnly = true)
     public User requiredById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
     public String decryptAccessToken(User user) {
-        return textEncryptor.decrypt(user.getAccessToken());
+        return tokenEncryptor.decrypt(user.getAccessToken());
     }
 
     private static Long toLong(Object value) {
@@ -55,4 +55,7 @@ public class userService {
         }
         return Long.parseLong(String.valueOf(value));
     }
+
+   
+
 }
